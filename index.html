@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kuaför Kararsızlığı</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #ffe4e1;
+            text-align: center;
+            position: relative;
+        }
+        .container {
+            max-width: 500px;
+            margin: auto;
+        }
+        .welcome-screen, .selection-screen, .haircut-options, .color-options, .result-screen, .final-message {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+        h1, h2, h3 {
+            color: #d63384;
+        }
+        button {
+            background-color: #ff69b4;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            margin: 10px;
+            font-size: 18px;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+        button:hover {
+            transform: scale(1.1);
+            background-color: #d63384;
+        }
+        input {
+            padding: 10px;
+            font-size: 16px;
+            border: 2px solid #d63384;
+            border-radius: 10px;
+        }
+        #message {
+            font-size: 20px;
+            color: #d63384;
+            margin-top: 20px;
+            display: none;
+        }
+        #countdown {
+            font-size: 24px;
+            color: #d63384;
+            margin-top: 20px;
+            display: none;
+        }
+        .hearts {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            pointer-events: none;
+            display: none;
+        }
+        .heart {
+            position: absolute;
+            color: red;
+            font-size: 30px;
+            animation: float 2s linear infinite;
+        }
+        @keyframes float {
+            0% { transform: translateY(0) scale(1); opacity: 1; }
+            100% { transform: translateY(-100px) scale(1.5); opacity: 0; }
+        }
+        .kuafor-image {
+            width: 80%;
+            border-radius: 20px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="welcome-screen">
+            <h1>Hoşgeldiniz Kuaför Dükkanına!</h1>
+            <img src="kuafor.jpg" class="kuafor-image" alt="Kuaför Resmi">
+            <p>Sadece sizin için tasarlanan bu kuaförde kararsızlık konusunda sana yardımcı olalım.</p>
+            <input type="text" id="nameInput" placeholder="Adınızı girin">
+            <button onclick="goToSelection()">Devam Et</button>
+        </div>
+        
+        <div class="selection-screen" style="display: none;">
+            <h2 id="welcomeMessage"></h2>
+            <div class="options">
+                <button onclick="selectHaircut()">Saç Kestirme</button>
+                <button onclick="selectColoring()">Saç Boyama</button>
+            </div>
+        </div>
+        
+        <div class="haircut-options" style="display: none;">
+            <h3>Hangi uzunluğu istersiniz?</h3>
+            <button onclick="startProcessing('Omuz uzunluğu harika bir tercih!')">Omuz Uzunluğu</button>
+            <button onclick="startProcessing('Biraz kısalt güzel seçim!')">Biraz Kısalt</button>
+            <button onclick="startProcessing('Kel olmak mı? Abartma sende essek KEL OLMA ama yine de')">Kel Ol</button>
+        </div>
+        
+        <div class="color-options" style="display: none;">
+            <h3>Hangi rengi seçmek istersiniz?</h3>
+            <button onclick="startProcessing('Kızıl saç harika oldu!')">Kızıl</button>
+            <button onclick="startProcessing('Sarı saç şahane oldu!')">Sarı</button>
+            <button onclick="startProcessing('Siyah saç mükemmel oldu!')">Siyah</button>
+        </div>
+        
+        <div class="result-screen" style="display: none;">
+            <h3>Fotoğrafınız veritabanından alınıyor ve değerlendiriliyor...</h3>
+            <div id="countdown">5</div>
+        </div>
+        
+        <div class="final-message" style="display: none;">
+            <h3 id="finalText"></h3>
+            <div class="hearts" id="hearts"></div>
+            <button onclick="goToHome()">Başka Seçenekleri Deneyin</button>
+        </div>
+    </div>
+    
+    <script>
+        function goToSelection() {
+            let name = document.getElementById('nameInput').value;
+            document.querySelector('.welcome-screen').style.display = 'none';
+            document.querySelector('.selection-screen').style.display = 'flex';
+            document.getElementById('welcomeMessage').innerText = `Hoşgeldin, ${name}!`;
+        }
+        function selectHaircut() {
+            document.querySelector('.selection-screen').style.display = 'none';
+            document.querySelector('.haircut-options').style.display = 'flex';
+        }
+        function selectColoring() {
+            document.querySelector('.selection-screen').style.display = 'none';
+            document.querySelector('.color-options').style.display = 'flex';
+        }
+        function startProcessing(message) {
+            document.querySelector('.haircut-options').style.display = 'none';
+            document.querySelector('.color-options').style.display = 'none';
+            document.querySelector('.result-screen').style.display = 'flex';
+            let countdown = document.getElementById('countdown');
+            countdown.style.display = 'block';
+            let timeLeft = 5;
+            let timer = setInterval(() => {
+                timeLeft--;
+                countdown.innerText = timeLeft;
+                if (timeLeft === 0) {
+                    clearInterval(timer);
+                    document.querySelector('.result-screen').style.display = 'none';
+                    document.querySelector('.final-message').style.display = 'flex';
+                    document.getElementById('finalText').innerText = message + " Çok güzel oldunuz! 💖";
+                    generateHearts();
+                }
+            }, 1000);
+        }
+        function goToHome() {
+            document.querySelector('.final-message').style.display = 'none';
+            document.querySelector('.selection-screen').style.display = 'flex';
+        }
+        function generateHearts() {
+            let hearts = document.getElementById('hearts');
+            hearts.style.display = 'block';
+            for (let i = 0; i < 30; i++) {
+                let heart = document.createElement('div');
+                heart.classList.add('heart');
+                heart.innerHTML = '❤️';
+                heart.style.left = Math.random() * 100 + '%';
+                heart.style.top = Math.random() * 100 + '%';
+                heart.style.animationDuration = (Math.random() * 3 + 1) + 's';
+                hearts.appendChild(heart);
+            }
+        }
+    </script>
+</body>
+</html>
